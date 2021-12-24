@@ -1,1 +1,1 @@
-# compgenomics2021
+# computational genomics 2021
