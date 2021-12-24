@@ -1,0 +1,284 @@
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s /home/aaron/geneprediction/Data2/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/geneprediction/Data2/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/aaron/geneprediction/Code/genemarks2/mgm_11.mod	-s	/home/aaron/geneprediction/Data2/CGT1009_careful_Scaffolds.fasta	-o	/home/aaron/geneprediction/Data2/CGT1009/CGT1009.gms2.gff	--format	gff	--NT	/home/aaron/geneprediction/Data2/CGT1009/CGT1009.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s /home/aaron/geneprediction/Data2/CGT1020_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/geneprediction/Data2/CGT1020_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/aaron/geneprediction/Code/genemarks2/mgm_11.mod	-s	/home/aaron/geneprediction/Data2/CGT1020_careful_Scaffolds.fasta	-o	/home/aaron/geneprediction/Data2/CGT1020/CGT1020.gms2.gff	--format	gff	--NT	/home/aaron/geneprediction/Data2/CGT1020/CGT1020.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s /home/aaron/geneprediction/Data2/CGT1058_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/geneprediction/Data2/CGT1058_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/aaron/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/aaron/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/aaron/geneprediction/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/aaron/geneprediction/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/aaron/geneprediction/Code/genemarks2/mgm_11.mod	-s	/home/aaron/geneprediction/Data2/CGT1058_careful_Scaffolds.fasta	-o	/home/aaron/geneprediction/Data2/CGT1058/CGT1058.gms2.gff	--format	gff	--NT	/home/aaron/geneprediction/Data2/CGT1058/CGT1058.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s /home/atoporek3/geneprediction/Data/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/atoporek3/geneprediction/Data/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod	-s	/home/atoporek3/geneprediction/Data/CGT1009_careful_Scaffolds.fasta	-o	/home/atoporek3/geneprediction/Data/CGT1009/CGT1009.gms2.gff	--format	gff	--NT	/home/atoporek3/geneprediction/Data/CGT1009/CGT1009.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s /home/atoporek3/geneprediction/Data/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/atoporek3/geneprediction/Data/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/atoporek3/geneprediction/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/atoporek3/geneprediction/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/atoporek3/geneprediction/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/atoporek3/geneprediction/Code/genemarks2/mgm_11.mod	-s	/home/atoporek3/geneprediction/Data/CGT1009_careful_Scaffolds.fasta	-o	/home/atoporek3/geneprediction/Data/CGT1009/CGT1009.gms2.gff	--format	gff	--NT	/home/atoporek3/geneprediction/Data/CGT1009/CGT1009.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s /home/aaron/temp/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/temp/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/geneprediction/webservercode/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/geneprediction/webservercode/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/geneprediction/webservercode/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/webservercode/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/webservercode/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/aaron/geneprediction/webservercode/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/aaron/geneprediction/webservercode/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/webservercode/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/webservercode/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/aaron/geneprediction/webservercode/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/geneprediction/webservercode/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/geneprediction/webservercode/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/aaron/geneprediction/webservercode/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -m itr_3.mod -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/aaron/geneprediction/webservercode/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/aaron/geneprediction/webservercode/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2 -m itr_4.mod -M /home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/aaron/geneprediction/webservercode/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/aaron/geneprediction/webservercode/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/aaron/geneprediction/webservercode/genemarks2/mgm_11.mod	-s	/home/aaron/temp/CGT1009_careful_Scaffolds.fasta	-o	/home/aaron/temp/CGT1009_careful_Scaffolds/CGT1009_careful_Scaffolds.gms2.gff	--format	gff	--NT	/home/aaron/temp/CGT1009_careful_Scaffolds/CGT1009_careful_Scaffolds.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod	-s	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009_careful_Scaffolds.fasta	-o	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009/CGT1009.gms2.gff	--format	gff	--NT	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1009/CGT1009.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1020_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1020_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod	-s	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1020_careful_Scaffolds.fasta	-o	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1020/CGT1020.gms2.gff	--format	gff	--NT	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1020/CGT1020.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1058_careful_Scaffolds.fasta -o tmp_mgm_11.gff -f gff
+echo '>anydef' > tmpseq.fna
+grep -v '>' /home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1058_careful_Scaffolds.fasta | tr '[:lower:]' '[:upper:]' >> tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_0.lst 
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_0.lst -m itr_1.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 0 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --run-motif-search false --genome-group D
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_1.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_1.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_0.lst -b itr_1.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group C --gc-upstr-len-rbs 20 --align right --gc-width-rbs 6 --gc-upstr-len-prom 20 --gc-width-prom 6 --gc-extended-sd TAAGGAGGTGA
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment promoter-is-valid-for-bacteria --fnmod itr_2.mod --dist-thresh 14 --score-thresh 0.25 --window-size 1 --min-leaderless-percent 11 --min-leaderless-count 100 --fnlabels itr_2.lst --fnseq tmpseq.fna
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment promoter-and-rbs-match --fnmod itr_2.mod --match-thresh 3
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group B --gb-upstr-len-rbs 20 --align right --gb-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment rbs-consensus-and-16s-match --fnmod itr_2.mod --allow-ag-sub
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_1.lst -m itr_2.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_2.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_2.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_1.lst -b itr_2.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem experiment match-rbs-to-16s --fnlabels itr_2.lst --match-to TAAGGAGGTGA --min-match 4 --allow-ag-sub
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_2.lst -m itr_3.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_3.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_3.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_2.lst -b itr_3.lst -G
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/biogem gms2-training -s tmpseq.fna -l itr_3.lst -m itr_4.mod --order-coding 5 --order-noncoding 2 --only-train-on-native 1 --genetic-code 11 --order-start-context 2 --fgio-dist-thr 25 --genome-group A --ga-upstr-len-rbs 20 --align right --ga-width-rbs 6
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2 -m itr_4.mod -M /home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod -s tmpseq.fna -o itr_4.lst --format train
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/compp -n -a itr_3.lst -b itr_4.lst -G
+cp itr_4.mod GMS2.mod
+/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/gmhmmp2	-m	GMS2.mod	-M	/home/aaron/Team2-WebServer/mysite/uploader/Code/genemarks2/mgm_11.mod	-s	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1058_careful_Scaffolds.fasta	-o	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1058/CGT1058.gms2.gff	--format	gff	--NT	/home/aaron/Team2-WebServer/mysite/uploader/gene_prediction_data/CGT1058/CGT1058.gms2.fnn	
+rm -f tmp_mgm_11.gff tmpseq.fna itr_0.lst itr_1.mod itr_1.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_2.mod itr_2.lst itr_3.mod itr_3.lst itr_4.mod itr_4.lst

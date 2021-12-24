@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+<title>PCGAPI</title>
+<style>
+	body,html {
+		height: 100%;
+		}
+	h1 {
+		font-size: 3.25em;
+		}
+	#expansion {
+		font-size: 2.25em;
+		}
+	h3 {
+		font-size: 1.5em;
+		}
+	#sentence {
+		font-size: 1.25em;
+		}
+	.bg {
+		background-image: url("{% static 'genome_assembly/assests/img/prokaryote2.png' %}");
+		background-repeat: no-repeat;
+		background-position: center;
+		background-size: cover;
+		border-radius: 30px;
+		height: 100%;
+		}
+	.welcome {
+		color: rgba(245,245,245,1);
+		text-align: center;
+		text-shadow: -1px 1px 2px #000,
+				-1px 1px 2px #000,
+				-1px 1px 0 #000,
+				-1px 1px 0 #000;
+		font-family: "Consolas";
+		height: 65%;
+		}
+	.full {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		}
+	.full a {
+		text-decoration: none;
+		color: rgba(245,245,245,1);
+		}
+	.options {
+		border: solid;
+		border-radius: 10px;
+		padding: 5px 5px 5px 5px;
+		position: relative;
+		top: 30%;
+		margin-left: 60px;
+		margin-right: 60px;
+		}
+	.options:hover {
+		transform: scale(1.25);
+		transition: all 1s;
+		background-color: lightsteelblue;
+		border-color: black;
+		}
+	.container {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr 1fr;
+		text-align: center;
+		height: 35%;
+		}
+	.steps {
+		border: solid;
+		border-radius: 10px;
+		font-family: "Consolas";
+		list-style-type: none;
+		margin: 2px;
+		height: 95%;
+		background-color: rgba(137,226,137,0.9);
+		}
+	.steps:hover {
+		background-color: rgba(137,226,137,1);
+		position: relative;
+		z-index: 10000;
+		transition: all 1s;
+		}
+	.steps b {
+		font-size: 1.25em;
+		}
+	#step1:hover {
+		transform: scale(1.10) translate(50px,-50px);
+		}
+	#step2:hover {
+		transform: scale(1.10) translate(0px,-50px);
+		}
+	#step3:hover {
+		transform: scale(1.10) translate(0px,-50px);
+		}
+	#step4:hover {
+		transform: scale(1.10) translate(-50px,-50px);
+		}
+	.clips {
+		width: 50%;
+		height: 50%;
+		object-fit: contain;
+		opacity: 1;
+		}
+	.container a {
+		text-decoration: none;
+		color: black;
+		}
+</style>
+</head>
+
+<body>
+<div class="bg">
+<div class="welcome">
+<h1>PCGAPI</h1>
+<h2 id="expansion">Pipeline for Comparative Genomic Analysis of Prokaryotic Isolates</h2>
+<h3>Georgia Institute of Technology: BIOL 7210 Spring 2021</h3>
+<p id="sentence">Welcome to our website! Here, you can complete a full comparative genomic analysis of a set of unknown prokaryotic isolates. </p>
+
+<div class="full">
+<a href="https://compgenomics2021.biosci.gatech.edu/Main_Page"><h2 class="options">Class Wiki</h2></a>
+<a href="./fullpipelinepage.html"><h2 class="options">Run the full pipeline</h2></a>
+<a href="{% url 'ga-index'%}"><h2 class="options">Make a pipeline</h2></a>
+</div>
+</div>
+
+<div class="container">
+<a href="{% url 'ga-genomeassembly' %}"><p class="steps" id="step1"><b>Genome Assembly</b><br><img class="clips" src="{% static 'genome_assembly/assests/img/assembly2.png' %}"></img><br>Reconstruct a genome from raw sequence reads<br></p></a>
+<a href="{% url 'ga-geneprediction' %}"><p class="steps" id="step2"><b>Gene Prediction</b><br><img class="clips" src="{% static 'genome_assembly/assests/img//predict2.png' %}"></img><br>Identify sequences that are likely to be genes<br></p></a>
+<a href="{% url 'ga-functionalannotation' %}"><p class="steps" id="step3"><b>Functional Annotation</b><br><img class="clips" src="{% static 'genome_assembly/assests/img/annotate2.png' %}"></img><br>Determine each gene's biological significance<br></p></a>
+<a href="{% url 'ga-comparitivegenomics' %}"><p class="steps" id="step4"><b>Comparative Genomics</b><br><img class="clips" src="{% static 'genome_assembly/assests/img/compare.png' %}"></img><br>Compare annotated genomes of different isolates<br></p></a>
+</div>
+</div>
+
+</body>
+</html>
