@@ -4,8 +4,8 @@ Course summary: The science of genomics involves the intersection of experimenta
 
 Stages :-
 
-1) Genome assembly
-2) Gene prediction
-3) Functional Annotation
-4) Comparative Genomics
-5) Web server with functionalities
+1) Genome assembly : [source](https://github.com/rbr7/compgenomics2021/tree/main/source/team2_genome_assembly)
+2) Gene prediction : [source](https://github.com/rbr7/compgenomics2021/tree/main/source/team2_gene_prediction)
+3) Functional Annotation : [source](https://github.com/rbr7/compgenomics2021/tree/main/source/functional_annotation)
+4) Comparative Genomics : [source](https://github.com/rbr7/compgenomics2021/tree/main/source/comparative_genomics)
+5) Web server with functionalities : [source](https://github.com/rbr7/compgenomics2021/tree/main/source/web_server)
